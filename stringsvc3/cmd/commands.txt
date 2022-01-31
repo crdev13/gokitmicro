@@ -1,0 +1,19 @@
+$ go get github.com/go-kit/kit/examples/stringsvc3
+// you can replace stringsvc3 by go run main.go
+$ stringsvc3 -listen=:8001 &
+listen=:8001 caller=proxying.go:25 proxy_to=none
+listen=:8001 caller=main.go:72 msg=HTTP addr=:8001
+$ stringsvc3 -listen=:8002 &
+listen=:8002 caller=proxying.go:25 proxy_to=none
+listen=:8002 caller=main.go:72 msg=HTTP addr=:8002
+$ stringsvc3 -listen=:8003 &
+listen=:8003 caller=proxying.go:25 proxy_to=none
+listen=:8003 caller=main.go:72 msg=HTTP addr=:8003
+$ stringsvc3 -listen=:8080 -proxy=localhost:8001,localhost:8002,localhost:8003
+listen=:8080 caller=proxying.go:29 proxy_to="[localhost:8001 localhost:8002 localhost:8003]"
+listen=:8080 caller=main.go:72 msg=HTTP addr=:8080
+
+$ for s in foo bar baz ; do curl -d"{\"s\":\"$s\"}" localhost:8080/uppercase ; done
+{"v":"FOO"}
+{"v":"BAR"}
+{"v":"BAZ"}
